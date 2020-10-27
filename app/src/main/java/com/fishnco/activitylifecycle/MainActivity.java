@@ -1,5 +1,6 @@
 package com.fishnco.activitylifecycle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button showGuess;
     private EditText enterGuess;
+    private final int REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +32,25 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, ShowGuess.class);
                     intent.putExtra("guess", guess);
                     intent.putExtra("age", 34);
-                    startActivity(intent);
+                    //startActivity(intent);
+                    startActivityForResult(intent, REQUEST_CODE); // to be able to use onActivityResult
                 } else {
                     Toast.makeText(MainActivity.this, "Enter Guess", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                assert data != null;
+                String message = data.getStringExtra("msg_back");
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
